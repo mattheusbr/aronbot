@@ -1,4 +1,4 @@
-import {SlashCommandBuilder, ChatInputCommandInteraction, CacheType,} from "discord.js";
+import {SlashCommandBuilder, ChatInputCommandInteraction, CacheType, ApplicationCommandType,} from "discord.js";
 import { Command } from "../interface/Command";
     
 export class Ping implements Command {
@@ -7,6 +7,7 @@ export class Ping implements Command {
   slashCommandConfig = new SlashCommandBuilder()
     .setName(this.name)
     .setDescription(this.description);
+  type = ApplicationCommandType.ChatInput
 
   async execute(
     interaction: ChatInputCommandInteraction<CacheType>

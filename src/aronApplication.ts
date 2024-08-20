@@ -19,7 +19,7 @@ class AronApplication {
         GatewayIntentBits.MessageContent,
       ],
       shards: "auto",
-      failIfNotExists: false,        
+      failIfNotExists: false,      
     });
     this.discordRestClient = new REST().setToken(DISCORD_ACCESS_TOKEN);
     this.interactionHandler = new InteractionHandler();
@@ -63,18 +63,22 @@ class AronApplication {
 
   registerSlashCommands() {
     const commands = this.interactionHandler.getSlashCommands();
-    this.discordRestClient
-      .put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
-        body: commands,
-      })
-      .then((data: any) => {
-        console.log(
-          `Successfully registered ${data.length} global application (/) commands`
-        );
-      })
-      .catch((err) => {
-        console.error("Error registering application (/) commands", err);
-      });
+    this.client.application?.commands.set(commands).then(({size}) => {
+      console.log(`Successfully registered ${size} global (/) commands`);
+    });
+
+    // this.discordRestClient
+    //   .put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
+    //     body: commands,
+    //   })
+    //   .then((data: any) => {
+    //     console.log(
+    //       `Successfully registered ${data.length} global application (/) commands`
+    //     );
+    //   })
+    //   .catch((err) => {
+    //     console.error("Error registering application (/) commands", err);
+    //   });
   }
 
 }
