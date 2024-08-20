@@ -5,6 +5,7 @@ dotenv.config();
 
 const DISCORD_ACCESS_TOKEN = process.env.DISCORD_TOKEN || "";
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || "";
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || "";
 
 class AronApplication {
   private client: Client;
@@ -38,13 +39,13 @@ class AronApplication {
   }
 
   addClientEventHandlers() {
-      this.client.on(Events.MessageCreate, (message: Message) => {
-        if (message.author.bot) 
-          return;
+      // this.client.on(Events.MessageCreate, (message: Message) => {
+      //   if (message.author.bot) 
+      //     return;
           
-        const { content } = message;
-        message.reply(`Serenity Bot says: ${content}`);
-      });
+      //   const { content } = message;
+      //   message.reply(`Serenity Bot says: ${content}`);
+      // });
   
       this.client.on(Events.ClientReady, () => {
         console.log("Serenity bot client logged in");
@@ -61,24 +62,24 @@ class AronApplication {
       });
   }
 
-  registerSlashCommands() {
+  async registerSlashCommands() {
     const commands = this.interactionHandler.getSlashCommands();
-    this.client.application?.commands.set(commands).then(({size}) => {
-      console.log(`Successfully registered ${size} global (/) commands`);
-    });
+    // await this.client.application?.commands.set(commands).then(({size}) => {
+    //   console.log(`Successfully registered ${size} global (/) commands`);
+    // });
 
-    // this.discordRestClient
-    //   .put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
-    //     body: commands,
-    //   })
-    //   .then((data: any) => {
-    //     console.log(
-    //       `Successfully registered ${data.length} global application (/) commands`
-    //     );
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error registering application (/) commands", err);
-    //   });
+    await this.discordRestClient
+    .put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID), {
+      body: commands,
+    })
+    .then((data: any) => {
+      console.log(
+        `Successfully registered ${data.length} global application (/) commands`
+      );
+    })
+    .catch((err) => {
+      console.error("Error registering application (/) commands", err);
+    });
   }
 
 }
